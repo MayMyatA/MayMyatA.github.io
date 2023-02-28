@@ -1,0 +1,133 @@
+<!DOCTYPE=html>
+<html>
+<head>
+<link rel="stylesheet" href="stylefinal.css">
+<title>Myat's EP1000 portfolio</title>
+</head>
+<body>
+<h1><a href="index.html">Home</a>&#160;&#160;&#160;&#160;<a href="about.html">About Me</a>&#160;&#160;&#160;&#160;<a href="week.html">Projects</a>&#160;&#160;&#160;&#160;<a href="final.html">Final project</a></h1>
+<br><h1>Final Project: Reaction Time Game</h1>
+<br>
+<a href="final.html"><h5>to Page 1</h5></a>
+<a href="final2.html"><h5>to Page 2</h5></a>
+<h3><br></h3>
+<h1 font-size: 35px>Code for arduino</h1>
+<br>
+#include <Adafruit_GFX.h><br>
+#include <Adafruit_ST7735.h><br>
+<br>
+// Define the pins used for the TFT screen and the button<br>
+#define TFT_CS     10<br>
+#define TFT_RST    9<br>
+#define TFT_DC     8<br>
+#define TFT_LED    11<br>
+#define BUTTON_PIN 2<br>
+<br>
+
+// Create an instance of the TFT screen object<br>
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);<br>
+boolean gameStarted = false;<br>
+<br>
+void setup() {<br>
+  // Set up the TFT screen<br>
+  tft.initR(INITR_BLACKTAB);<br>
+  tft.fillScreen(ST77XX_BLACK);<br>
+  tft.setRotation(1);<br>
+  tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);<br>
+  
+<br>
+  // Set up the button<br>
+  pinMode(BUTTON_PIN, INPUT_PULLUP);<br>
+  <br>
+  // Set up the LED<br>
+  pinMode(TFT_LED, OUTPUT);<br>
+}<br>
+
+void loop() {<br>
+  // Display a message asking the user to get ready<br>
+  tft.fillScreen(0xF800);<br>
+  tft.setTextColor(ST7735_BLACK, 0xF800);<br>
+  tft.setCursor(20, 20);<br>
+  tft.setTextSize(3);	<br>
+  tft.print("Get");<br>
+  tft.setCursor(20, 40);<br>
+  tft.print("ready!");<br>
+  gameStarted = false;<br>
+  
+
+ if (!gameStarted) {<br>
+  // Wait for a random amount of time (1-5 seconds)<br>
+  delay(random(1000, 5000));<br>
+  
+  while (!gameStarted && digitalRead(BUTTON_PIN) == LOW){<br>
+    delay(100);<br>
+    tft.fillScreen(0xF800);<br>
+   tft.setTextColor(ST7735_BLACK, 0xF800);<br>
+   tft.setCursor(5, 20);<br>
+   tft.setTextSize(2);<br>
+   tft.print("wait for");<br>
+   tft.setCursor(5, 55);<br>
+   tft.print("the green");<br>
+   delay(random(1000, 5000));<br>
+  }<br>
+  // Turn the screen green<br>
+  tft.fillScreen(ST77XX_GREEN);<br>
+  tft.setTextColor(0x7BEF, ST77XX_GREEN);<br>
+  tft.setCursor(20, 20);<br>
+  tft.setTextSize(3);<br>
+  tft.print("PRESS!");<br>
+  
+  // Turn on the LED<br>
+  digitalWrite(TFT_LED, HIGH);<br>
+   gameStarted = true;<br>
+  }<br>
+  
+  // Wait for the button to be pressed<br>
+  unsigned long startTime = millis();<br>
+  
+  while (digitalRead(BUTTON_PIN) == HIGH) {<br>
+    delay(10);<br>
+  }
+  
+  // Turn off the LED<br>
+  digitalWrite(TFT_LED, LOW);<br>
+  
+  
+  // Measure the reaction time
+  if (gameStarted && digitalRead(BUTTON_PIN) == LOW) {<br>
+  unsigned long reactionTime = millis() - startTime;<br>
+  
+  // Display the reaction time on the screen<br>
+  tft.fillScreen(0x07FF);<br>
+  tft.setCursor(10, 5);<br>
+  tft.setTextColor(ST7735_BLACK, 0x07FF);<br>
+  tft.setTextSize(3);<br>
+  tft.print("Reaction");<br>
+  tft.setCursor(10, 30);<br>
+  tft.setTextSize(3);<br>
+  tft.print("time:");<br>
+  tft.setCursor(20, 55);<br>
+  tft.print(reactionTime);<br>
+  tft.print(" ms");<br>
+  
+  // Wait for a few seconds before starting the next test<br>
+  delay(1000);<br>
+   tft.setTextColor(0xF800, 0x07FF);<br>
+  tft.setCursor(20, 80);<br>
+  tft.setTextSize(2);<br>
+  tft.print("press to");<br>
+  tft.setCursor(20, 95);<br>
+   tft.print("reset");<br>
+  
+  while (digitalRead(BUTTON_PIN) == HIGH) {<br>
+    delay(10);<br>
+  }<br>
+  gameStarted = false;<br>
+    }<br>
+  // Turn off the LED<br>
+  digitalWrite(TFT_LED, LOW);<br>
+}<br>
+
+<br><br><br>
+</body>
+</html>
